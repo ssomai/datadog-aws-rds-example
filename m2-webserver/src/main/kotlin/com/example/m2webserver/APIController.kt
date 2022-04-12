@@ -1,5 +1,6 @@
 package com.example.m2webserver
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,9 +13,12 @@ import java.sql.SQLException
 @RestController
 @RequestMapping("/api")
 class APIController {
-    val dburl = "jdbc:mysql://cdk-datadog-awsrds-datadogawsrdsrdscluster8b2bfb5-1izs92wl2mou5.cluster-cljb4lq5kkol.ap-northeast-2.rds.amazonaws.com:5306/ddrds?useSSL=false"
-    val dbuser = "testuser"
-    val dbpassword = "testpassword"
+    @Value("\${db.url}")
+    var dburl = ""
+    @Value("\${db.user}")
+    var dbuser = ""
+    @Value("\${db.password}")
+    var dbpassword = ""
 
     @PostMapping("/post")
     fun post(@RequestBody requestData: Map<String, Any>): String {
