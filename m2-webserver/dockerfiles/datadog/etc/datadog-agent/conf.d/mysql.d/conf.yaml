@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+  - host: @RDSURL@
+    username: datadog
+    password: datadogpassword
+    port: 5306
+    dbm: true
+
+    charset: utf8

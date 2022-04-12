@@ -1,0 +1,40 @@
+FROM ubuntu:22.04
+
+ARG AWS_CDK_VERSION=2.18.0
+
+# 카카오 repository로 다운 받기
+COPY change-ubuntu-mirror.sh /root/change-ubuntu-mirror.sh
+RUN chmod +x /root/change-ubuntu-mirror.sh
+RUN /root/change-ubuntu-mirror.sh -k
+
+# https://jcil.co.kr/16
+RUN apt -y install python3
+RUN python3 --version
+
+# https://jjeongil.tistory.com/1274
+RUN apt -y install python3-pip
+RUN pip3 --version
+
+# https://cloudaffaire.com/faq/how-to-install-aws-cli-on-alpine/
+# https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html
+RUN pip3 install awscli
+RUN aws --version
+
+# https://velog.io/@ywoosang/Node.js-%EC%84%A4%EC%B9%98
+RUN apt -y install nodejs
+RUN apt -y install npm
+RUN nodejs -v
+
+RUN npm install -g aws-cdk@${AWS_CDK_VERSION}
+
+VOLUME [ "/opt/app" ]
+VOLUME [ "/root/.aws" ]
+
+
+#COPY ../01_properties/.aws /root/.aws
+
+RUN apt -y install openjdk-11-jdk
+RUN java -version
+ENV GRADLE_USER_HOME=/opt/app/build/gradle
+
+WORKDIR /opt/app

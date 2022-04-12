@@ -1,0 +1,78 @@
+version: "3"
+services:
+#  webserver:
+#    build: webserver
+#    image: iwebserver
+#    container_name: cwebserver
+#    restart: always
+#    logging:
+#      options:
+#        max-size: "10m"
+#        max-file: "1"
+#    ports:
+#      - "8080:8080"
+
+## https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging/?tab=docker#overview
+## https://docs.datadoghq.com/getting_started/tagging/assigning_tags?tab=containerizedenvironments
+  webserver:
+    build: webserver
+    image: iwebserver
+    container_name: cwebserver
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "1"
+    ports:
+      - "8080:8080"
+#      - "8800:8800"
+    environment:
+      - DD_AGENT_HOST=datadog
+      - DD_HOSTNAME=@DD_HOSTNAME@
+      - DD_SERVICE=@DD_SERVICE@
+      - DD_VERSION=@DD_VERSION@
+      - DD_ENV=@DD_ENV@
+
+## datadog log https://docs.datadoghq.com/agent/docker/log/?tab=containerinstallation
+## datadog network https://docs.datadoghq.com/network_monitoring/performance/setup/?tab=docker
+## https://docs.datadoghq.com/tracing/runtime_metrics/java/
+  datadog:
+    build: datadog
+    image: idatadog
+    container_name: cdatadog
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "1"
+    links:
+      - webserver # ensures that the web app can send metrics
+
+    environment:
+      - DD_API_KEY=@DD_API_KEY@
+      - DD_ENV=@DD_ENV@
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_LOGS_CONFIG_DOCKER_CONTAINER_USE_FILE=true
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_CONTAINER_EXCLUDE=name:cdatadog
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - SYS_PTRACE
+      - NET_ADMIN
+      - IPC_LOCK
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /proc/:/host/proc/:ro
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /etc/passwd:/etc/passwd:ro
+      - ./datadog/etc/datadog-agent/conf.d:/etc/datadog-agent/conf.d:ro
+

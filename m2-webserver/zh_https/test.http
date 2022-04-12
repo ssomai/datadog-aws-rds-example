@@ -1,0 +1,18 @@
+
+###
+POST http://localhost:8080/api/post
+Content-Type: application/json
+
+{
+  "account": "hello"
+}
+
+###
+POST http://localhost:8080/api/poste
+Content-Type: application/json
+
+{
+  "account": "hello"
+}
+
+###

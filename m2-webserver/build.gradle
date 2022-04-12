@@ -1,0 +1,103 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id "org.springframework.boot" version "2.6.6"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "org.jetbrains.kotlin.jvm" version "1.6.20"
+    id "org.jetbrains.kotlin.plugin.spring" version "1.6.20"
+}
+
+group = "com.example"
+version = "0.0.1-SNAPSHOT"
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    implementation("mysql:mysql-connector-java:8.0.28")
+
+    implementation("com.datadoghq:dd-trace-api:0.98.1")
+    implementation("io.opentracing:opentracing-api:0.33.0")
+    implementation("io.opentracing:opentracing-util:0.33.0")
+
+//    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+//tasks.withType<KotlinCompile> {
+//    kotlinOptions {
+//        freeCompilerArgs = listOf("-Xjsr305=strict")
+//        jvmTarget = "11"
+//    }
+//}
+
+//tasks.withType<Test> {
+//    useJUnitPlatform()
+//}
+
+// bootjar랑 01_properties 합쳐내는 task 만들기
+
+
+
+//task b_build(type: Copy, group: '0main', dependsOn: bootJar) {
+task b_build(type: Copy, group: '0main', dependsOn: bootJar) {
+//    classifier "ec2_debug"
+//    metadataCharset 'UTF-8'
+
+    def props = new Properties()
+    file("01_properties/props/props.properties").withInputStream { props.load(it) }
+
+    destinationDir new File(buildDir.getPath()+'/distributions')
+
+    doFirst {
+//        println "hello"
+//        println props.getProperty("application.name")
+//        println props.getProperty("project.name")
+        props.forEach((k, v) -> {
+            println "$k => $v "
+        })
+
+        println "$destinationDir"
+    }
+    from('dockerfiles') {
+        filesMatching('docker-compose.yml') {
+            filter(ReplaceTokens, tokens: props)
+        }
+        filesMatching('**/etc/datadog-agent/conf.d/mysql.d/conf.yaml') {
+            filter(ReplaceTokens, tokens: props)
+        }
+    }
+    from(bootJar) {
+        into('webserver')
+        rename { 'app.jar' }
+    }
+
+//    from(war) {
+//        into('mainapi')
+//        rename { 'root.war' }
+//    }
+//    doLast {
+//        ssh.run {
+//            settings {
+//                pty = true
+//            }
+//            session(remotes.remote_ec2_debug_20200113) {
+//                put from: getArchivePath(), into: 'myvalet-mainapi/app.zip'
+//
+//                def cmds = [
+//                        'cd myvalet-mainapi',
+//                        'unzip -o app.zip -d app',
+//                        'cd app',
+//                        'docker-compose build',
+//                        'docker-compose up -d --remove-orphans'
+//                ].join('\n')
+//                execute cmds
+//            }
+//        }
+//    }
+}

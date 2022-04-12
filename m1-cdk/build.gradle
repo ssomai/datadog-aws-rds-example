@@ -1,0 +1,30 @@
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
+    id 'application'
+}
+
+tasks.wrapper {
+    gradleVersion = "7.4"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = "com.ssomai.datadogawsrds.cdk"
+version = "1.0"
+application {
+    mainClass.set("com.ssomai.datadogawsrds.cdk.DataDogAWSRDSAppKt")
+}
+
+dependencies {
+    api("software.amazon.awscdk:aws-cdk-lib:2.18.0")
+}
+

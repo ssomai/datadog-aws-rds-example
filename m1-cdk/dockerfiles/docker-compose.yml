@@ -1,0 +1,11 @@
+
+version: "3"
+services:
+  sdatadogawsrdscdk:
+    image: idatadogawsrdscdk:v1
+    build:
+      context: cdk
+    working_dir: /opt/app
+    volumes:
+      - ..:/opt/app:rw
+      - ../01_properties/.aws:/root/.aws:ro
