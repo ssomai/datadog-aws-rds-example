@@ -1,5 +1,5 @@
 rem docker-compose build --no-cache
-cd dockerfiles
+cd build/dockerfiles
 docker-compose build
 rem docker image prune
 

@@ -1,17 +1,5 @@
 version: "3"
 services:
-#  webserver:
-#    build: webserver
-#    image: iwebserver
-#    container_name: cwebserver
-#    restart: always
-#    logging:
-#      options:
-#        max-size: "10m"
-#        max-file: "1"
-#    ports:
-#      - "8080:8080"
-
 ## https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging/?tab=docker#overview
 ## https://docs.datadoghq.com/getting_started/tagging/assigning_tags?tab=containerizedenvironments
   webserver:

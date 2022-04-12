@@ -52,7 +52,7 @@ task b_build(type: Copy, group: '0main', dependsOn: bootJar) {
     def props = new Properties()
     file("01_properties/props/props.properties").withInputStream { props.load(it) }
 
-    destinationDir new File(buildDir.getPath()+'/distributions')
+    destinationDir = file(buildDir.path+"/dockerfiles")
 
     doFirst {
 //        println "hello"

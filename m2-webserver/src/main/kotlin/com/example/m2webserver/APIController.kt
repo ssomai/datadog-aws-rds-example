@@ -12,14 +12,17 @@ import java.sql.SQLException
 @RestController
 @RequestMapping("/api")
 class APIController {
+    val dburl = "jdbc:mysql://cdk-datadog-awsrds-datadogawsrdsrdscluster8b2bfb5-1izs92wl2mou5.cluster-cljb4lq5kkol.ap-northeast-2.rds.amazonaws.com:5306/ddrds?useSSL=false"
+    val dbuser = "testuser"
+    val dbpassword = "testpassword"
+
     @PostMapping("/post")
     fun post(@RequestBody requestData: Map<String, Any>): String {
         var conn: Connection? = null
 
         try {
             //2. mysql과 연결시키기
-            val url = "jdbc:mysql://cdk-datadog-awsrds-datadogawsrdsrdscluster8b2bfb5-1izs92wl2mou5.cluster-cljb4lq5kkol.ap-northeast-2.rds.amazonaws.com:5306/ddrds?useSSL=false"
-            conn = DriverManager.getConnection(url, "testuser", "testpassword")
+            conn = DriverManager.getConnection(dburl, dbuser, dbpassword)
             val ps = conn.prepareStatement("SELECT * FROM mysql.slow_log limit 10")
             val result = ps.executeQuery()
 
@@ -56,8 +59,7 @@ class APIController {
             //드라이버들이 읽히기만 하면 자동 객체가 생성되고 DriverManager에 등록된다.
 
             //2. mysql과 연결시키기
-            val url = "jdbc:mysql://cdk-datadog-awsrds-datadogawsrdsrdscluster8b2bfb5-1izs92wl2mou5.cluster-cljb4lq5kkol.ap-northeast-2.rds.amazonaws.com:5306/ddrds?useSSL=false"
-            conn = DriverManager.getConnection(url, "testuser", "testpassword")
+            conn = DriverManager.getConnection(dburl, dbuser, dbpassword)
             val ps = conn.prepareStatement("SELECT * FROM mysql.slow_log222 limit 10")
             val result = ps.executeQuery()
             System.out.println("Successfully Connection! $result")

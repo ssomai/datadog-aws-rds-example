@@ -1,4 +1,5 @@
-cd dockerfiles
+
+cd build/dockerfiles
 docker-compose up
 
 
